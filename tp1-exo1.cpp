@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-
+//TEST STEFAN
 // déclaration des constantes
 
 // LIMITES DE POIDS POUR CHAQUE LETTRE (en g)
