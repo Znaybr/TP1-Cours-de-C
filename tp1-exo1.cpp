@@ -9,14 +9,19 @@ const int limitePoids2 = 81;
 const int limitePoids3 = 120;
 
 // PRIX POUR CHAQUE LETTRE (en $)
-const float prix1 = 0.45;
-const float prix2 = 0.90;
-const float prix3 = 1.10;
-const float prix4 = 1.50;
+const double prix1 = 0.45;
+const double prix2 = 0.90;
+const double prix3 = 1.10;
+const double prix4 = 1.50;
+
+// VALEURS/COUT DES TAXES
+const double taxeTPS = 0.05; 
+const double taxeTVQ = 0.09975;
 
 // AUTRES
-const float rabaisGrosEnvois = 0.10; // 10% de rabais
+const double rabaisGrosEnvois = 0.10; // 10% de rabais
 const int montantPlafondPourRabais = 20;
+
 
 
 
@@ -26,10 +31,12 @@ void main() {
 	// déclaration des variables
 	double poidsLettre;
 	double coutLettre = 0;
-	int nbLettres = 0;
 	double sousTotal = 0;
+	double montantTaxes = 0;
 	double reduction = 0;
 	double grandTotal = 0;
+	bool saisieCorrecte = false;
+
 
 
 	// saisie des données + traitement pour chaque saisie
@@ -38,8 +45,19 @@ void main() {
 		cin >> poidsLettre;
 
 		// cas de traitement d'erreur de saisie
-		if (poidsLettre < 0){
+		if (cin.fail() || cin.peek() != '\n' || poidsLettre < 0){
 			cout << "Vous avez fait une erreur de saisie, merci de recommencer " << endl;
+			cin.clear();
+			cin.ignore(512, '\n');
+		}
+		else{
+			saisieCorrecte = true;
+		}
+
+
+		// cas de traitement pour : Saisie = 0
+		if (poidsLettre == 0){
+			coutLettre = 0;
 		}
 
 		// cas de traitement de saisies standard
@@ -53,26 +71,37 @@ void main() {
 			coutLettre = prix3;
 		}
 		else{
-			coutLettre = prix3;
+			coutLettre = prix4;
 		}
 
-		// incrément du nombre de lettre
-		nbLettres++;
 		// incrément du cout d'envoi
 		sousTotal += coutLettre;
-
 	} while
 		(poidsLettre != 0);
 
-	cout << "Le cout de l envoi avant reduction est de : " << sousTotal << endl;
+	// 1) affichage sous-total
+	cout << "Le cout de l envoi HT, avant reduction est de : " << sousTotal << endl;
 
-	
+
 	// TRAITEMENT GLOBAL DU COUT APRES SAISIES
 	if (sousTotal > montantPlafondPourRabais){
 		reduction = sousTotal * rabaisGrosEnvois;
+		// 2) affichage reduction
 		cout << "Le montant de la reduction pour cet envois consequent est de " << reduction << endl;
 	}
+	// MAJ du sous-total "dans tous les cas"
+	sousTotal -= reduction;
 
-	grandTotal = sousTotal - reduction;
+
+	// TRAITEMENT DES TAXES
+	montantTaxes += sousTotal * taxeTPS;
+	montantTaxes += sousTotal * taxeTVQ;
+	// 3) affichage taxes
+	cout << "Le montant des taxes est de " << montantTaxes << endl;
+
+
+	// TRAITEMENT FINAL
+	grandTotal = sousTotal + montantTaxes - reduction;
+	// 4) affichage grand-total
 	cout << "Le cout de l envoi total est de : " << grandTotal << endl;
 }
