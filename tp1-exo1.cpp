@@ -38,25 +38,32 @@ void main() {
 	bool saisieCorrecte = false;
 
 
-
 	// saisie des données + traitement pour chaque saisie
 	do {
 		cout << "Saisir le poids de la lettre ? ";
 		cin >> poidsLettre;
 
-		// cas de traitement d'erreur de saisie
-		if (cin.fail() || cin.peek() != '\n' || poidsLettre < 0){
+		// cas de traitement d'erreur de saisie (pas un nombre)
+		if (cin.fail() || cin.peek() != '\n'){
+			coutLettre = 0;
 			cout << "Vous avez fait une erreur de saisie, merci de recommencer " << endl;
-			cin.clear();
-			cin.ignore(512, '\n');
+			cin.clear(); // réinitialise le "cin"
+			cin.ignore(512, '\n'); // vide le tampon clavier jusqu'a un retour a la ligne
 		}
 		else{
 			saisieCorrecte = true;
+			coutLettre = 0;
 		}
 
 
+		// cas de traitement d'erreur de saisie (nombre invalide)
+		if (poidsLettre < 0){
+			cout << "Le poids saisi est négatif, recommencez " << endl;
+			coutLettre = 0;
+		}
+
 		// cas de traitement pour : Saisie = 0
-		if (poidsLettre == 0){
+		else if (poidsLettre == 0){
 			coutLettre = 0;
 		}
 
@@ -86,7 +93,7 @@ void main() {
 	// TRAITEMENT GLOBAL DU COUT APRES SAISIES
 	if (sousTotal > montantPlafondPourRabais){
 		reduction = sousTotal * rabaisGrosEnvois;
-		// 2) affichage reduction
+		// 2) affichage reduction (seulement si necessaire)
 		cout << "Le montant de la reduction pour cet envois consequent est de " << reduction << endl;
 	}
 	// MAJ du sous-total "dans tous les cas"
